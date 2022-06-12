@@ -7,33 +7,38 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController2D controller;
     public float runSpeed = 40f;
 
-    float horizontalMove = 0f;
-    bool crouch = false, jump = true;
+    float LRMove = 0f;
+    bool crouch = false, jump = false;
     // Update is called once per frame
     void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-
-        if (Input.GetButtonDown("Jump"))
+        LRMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+      //for input manager later on, but for now, i have the big stupid 
+      // if (Input.GetButtonDown("Jump"))
+      // {
+      //     jump = true;
+      // }
+        if (Input.GetKeyDown("space"))
         {
-            jump = true;
+             jump = true;
         }
-        if (Input.GetButtonDown("Crouch"))
-        {
-            crouch = true;
-        }
-        else if (Input.GetButtonUp("Crouch"))
-        {
-            crouch = false;
-        }
-        {
-            crouch = true;
-        }
+ 
+      // if (Input.GetButtonDown("Crouch"))
+      // {
+      //     crouch = true;
+      // }
+      // else if (Input.GetButtonUp("Crouch"))
+      // {
+      //     crouch = false;
+      // }
+      // {
+      //     crouch = true;
+      // }
     }
 
     private void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
-        jump = false;
+        controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump);
+         jump = false;
     }
 }

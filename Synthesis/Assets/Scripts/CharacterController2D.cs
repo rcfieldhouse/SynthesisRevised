@@ -63,6 +63,7 @@ public class CharacterController2D : MonoBehaviour
 
 	public void Move(float move, bool crouch, bool jump)
 	{
+
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
 		{
@@ -74,6 +75,7 @@ public class CharacterController2D : MonoBehaviour
 		}
 
 		//only control the player if grounded or airControl is turned on
+
 		if (m_Grounded || m_AirControl)
 		{
 
@@ -125,12 +127,16 @@ public class CharacterController2D : MonoBehaviour
 			}
 		}
 		// If the player should jump...
-		if (m_Grounded && jump)
+		if ((m_Grounded==true) && (jump==true))
 		{
 			// Add a vertical force to the player.
+			
+			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce*10));
 			m_Grounded = false;
-			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			
 		}
+		Debug.Log("grounded"+m_Grounded);
+		Debug.Log("jump" + jump);
 	}
 
 
