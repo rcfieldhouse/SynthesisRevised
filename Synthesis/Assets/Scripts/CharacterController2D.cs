@@ -61,7 +61,7 @@ public class CharacterController2D : MonoBehaviour
 	}
 
 
-	public void Move(float move, bool crouch, bool jump)
+	public void Move(float move, bool crouch, bool jump,bool doubleJump)
 	{
 
 		// If crouching, check to see if the character can stand up
@@ -126,20 +126,24 @@ public class CharacterController2D : MonoBehaviour
 				Flip();
 			}
 		}
+
 		// If the player should jump...
-		if ((m_Grounded==true) && (jump==true))
+		if (((m_Grounded==true) && (jump==true))||(doubleJump==true))
 		{
 			// Add a vertical force to the player.
-			
+			m_Rigidbody2D.velocity = Vector3.zero;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce*10));
 			m_Grounded = false;
 			
 		}
 		Debug.Log("grounded"+m_Grounded);
-		Debug.Log("jump" + jump);
+		
 	}
 
-
+	public bool GetIfGrounded()
+    {
+		return m_Grounded;
+    }
 	private void Flip()
 	{
 		// Switch the way the player is labelled as facing.
