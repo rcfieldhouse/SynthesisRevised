@@ -340,6 +340,7 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/VSSettingsProvider.ref.dll"
 "Assets/Scripts/CameraTrack.cs"
 "Assets/Scripts/CharacterController2D.cs"
+"Assets/Scripts/CharacterController3D.cs"
 "Assets/Scripts/PlayerMovement.cs"
 -langversion:8.0
 
