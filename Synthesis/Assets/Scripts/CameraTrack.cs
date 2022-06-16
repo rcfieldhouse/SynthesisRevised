@@ -6,7 +6,6 @@ public class CameraTrack : MonoBehaviour
 {
     // Start is called before the first frame update
     public Transform target;
-    
     private Rigidbody2D m_Rigidbody2D;
     private Vector3 difference = new Vector3(0.0f, 0.0f, 10.0f);
     private void Start()
