@@ -20,7 +20,6 @@ public class CharacterController3D : MonoBehaviour
 	private Rigidbody Rigidbody; 
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
-
 	[Header("Events")]
 	[Space]
 
@@ -50,14 +49,22 @@ public class CharacterController3D : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		m_Grounded = true;
+		if (other.tag == "Ground")
+        {
+			m_Grounded = true;
+		}
 	}
 	private void OnTriggerExit(Collider other)
 	{
-		m_Grounded = false;
+		if (other.tag == "Ground")
+		{
+			m_Grounded = false;
+			GetComponent<PlayerInput>().SetJump(true);
+		}
 	}
 	public void Move(float move, bool crouch, bool jump, bool doubleJump)
 	{
+		
 		Debug.Log("move " + move);
 		// If crouching, check to see if the character can stand up
 		//if (!crouch)
@@ -108,7 +115,6 @@ public class CharacterController3D : MonoBehaviour
 				Rigidbody.velocity = Vector3.zero;
 				Rigidbody.AddForce(new Vector3(0f, m_JumpForce * 10), 0f);
 				m_Grounded = false;
-
 			}
 			Debug.Log("grounded" + m_Grounded);
 			// Move the character by finding the target velocity

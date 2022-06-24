@@ -418,12 +418,12 @@ namespace UnityEditor.Tilemaps
 
         private void UndoRedoPerformed()
         {
-            if (unlocked)
-            {
-                m_PaletteNeedsSave = true;
-                RefreshAllTiles();
-                Repaint();
-            }
+            if (!unlocked)
+                return;
+
+            m_PaletteNeedsSave = true;
+            RefreshAllTiles();
+            Repaint();
         }
 
         private void HandlePanAndZoom()
@@ -600,7 +600,13 @@ namespace UnityEditor.Tilemaps
                     RenderGrid();
                 previewUtility.Render();
                 if (m_Owner.drawGizmos)
+                {
+                    // Set CameraType to SceneView to force Gizmos to be drawn
+                    var storedType = previewUtility.camera.cameraType;
+                    previewUtility.camera.cameraType = CameraType.SceneView;
                     Handles.Internal_DoDrawGizmos(previewUtility.camera);
+                    previewUtility.camera.cameraType = storedType;
+                }
             }
 
             RenderDragAndDropPreview();
@@ -798,12 +804,12 @@ namespace UnityEditor.Tilemaps
             }
         }
 
-        public void SetTile(Tilemap tilemapTarget, Vector2Int position, TileBase tile, Color color, Matrix4x4 matrix)
+        internal void SetTile(Tilemap tilemapTarget, Vector2Int position, TileBase tile, Color color, Matrix4x4 matrix)
         {
             Vector3Int pos3 = new Vector3Int(position.x, position.y, zPosition);
             tilemapTarget.SetTile(pos3, tile);
             tilemapTarget.SetColor(pos3, color);
-            tilemapTarget.SetTransformMatrix(pos3, matrix);
+            tilemapTarget.SetTransformMatrix(pos3, tilemapTarget.GetTransformMatrix(pos3) * matrix);
         }
 
         protected override void Paint(Vector3Int position)
@@ -894,6 +900,18 @@ namespace UnityEditor.Tilemaps
             }
         }
 
+        protected override bool CustomTool(bool isHotControl, TilemapEditorTool tool, Vector3Int position)
+        {
+            var executed = false;
+            if (grid)
+            {
+                executed = tool.HandleTool(isHotControl, grid, brushTarget, position);
+                if (executed)
+                    OnPaletteChanged();
+            }
+            return executed;
+        }
+
         public override void Repaint()
         {
             m_Owner.Repaint();
@@ -903,6 +921,8 @@ namespace UnityEditor.Tilemaps
         {
             GridSelection.Clear();
         }
+
+        public override bool isActive => grid != null;
 
         protected override void OnBrushPickStarted()
         {

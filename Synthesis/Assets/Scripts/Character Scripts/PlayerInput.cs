@@ -5,10 +5,11 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     public CharacterController3D controller;
+    public CharacterCombat Combat; 
     public float runSpeed = 40f;
 
     float LRMove = 0f;
-    bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
+    private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
     // Update is called once per frame
     void Update()
     {
@@ -41,19 +42,19 @@ public class PlayerInput : MonoBehaviour
         }
 
         //Attack1 
-        if (Input.GetKeyDown("e"))
+        if (Input.GetKeyDown("1"))
         {
-            GetComponent<HealthSystem>().TakeDamage(1);
+            Combat.Attack(controller.transform,1);
         }
         //Attack2 
-        if (Input.GetKeyDown("f"))
+        if (Input.GetKeyDown("2"))
         {
-            GetComponent<HealthSystem>().TakeDamage(2);
+            Combat.Attack(controller.transform, 2);
         }
         //Attack3 
-        if (Input.GetKeyDown("q"))
+        if (Input.GetKeyDown("3"))
         {
-            GetComponent<HealthSystem>().TakeDamage(3);
+            Combat.Attack(controller.transform, 3);
         }
       //devhacks 
         if (Input.GetKeyDown("p"))
@@ -74,7 +75,10 @@ public class PlayerInput : MonoBehaviour
         //     crouch = true;
         // }
     }
-
+    public void SetJump(bool jump)
+    {
+        CanDoubleJump = jump;
+    }
     private void FixedUpdate()
     {
         controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump,DoubleJump);
