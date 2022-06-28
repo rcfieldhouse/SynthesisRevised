@@ -21,7 +21,7 @@ public class HealthSystem : MonoBehaviour
    public void TakeDamage(int damage,Vector3 Knockback)
     {
         gameObject.GetComponent<Rigidbody>().velocity=Knockback*damage*2;
-        Health -=damage;
+        Health -= damage;
     }
 
    public void HealthUp(int HealthUp)
