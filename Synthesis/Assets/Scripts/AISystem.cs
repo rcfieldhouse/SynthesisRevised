@@ -11,6 +11,7 @@ public class AISystem : MonoBehaviour
 	private Vector3 m_Velocity = Vector3.zero;
 	private float Direction = 1.0f;  
 	private float MovementCooldown=0.0f;
+	public float AttackCooldown= 2.0f;
 	private GameObject target;
 	private Vector3 KnockbackDir = new Vector3(0.0f, 0.0f, 0.0f);
 	// Start is called before the first frame update
@@ -30,12 +31,26 @@ public class AISystem : MonoBehaviour
 				Direction =diff/ Mathf.Abs(diff); ;
 				MovementCooldown = 1.0f; ;
 			}
-			Attack(GetComponent<Rigidbody>().transform, 1);
+			
 		}
 		
 	}
-	private void OnTriggerExit(Collider other)
+    private void OnTriggerStay(Collider other)
+    {
+		if (other.tag == "Player")
+        {			
+			if (AttackCooldown <= 0.0f)
+				Attack(GetComponent<Rigidbody>().transform, 1);
+			AttackCooldown -= Time.deltaTime;
+		}
+    }
+
+    private void OnTriggerExit(Collider other)
 	{
+		if (other.tag == "Player")
+		{
+			AttackCooldown = 0.0f;
+		}		
 		if (other.tag == "Ground")
         {
 			if (MovementCooldown < 0)
@@ -88,8 +103,9 @@ public class AISystem : MonoBehaviour
 	}
 	public void Attack(Transform pos, int Dmg)
 	{
-		KnockbackDir = target.transform.position - pos.position;
-		target.GetComponent<HealthSystem>().TakeDamage(Dmg, KnockbackDir);
+		KnockbackDir = target.transform.position - pos.position+new Vector3(0.0f,0.3f,0.0f);
+		target.GetComponent<HealthSystem>().TakeDamage(Dmg, KnockbackDir*10);
+		AttackCooldown = 2.0f;
 	}
 	private void Flip()
 	{
