@@ -7,13 +7,14 @@ public class PlayerInput : MonoBehaviour
     public CharacterController3D controller;
     public CharacterCombat Combat; 
     public float runSpeed = 40f;
-
+  
     float LRMove = 0f;
     private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
     // Update is called once per frame
     void Update()
     {
         //LR move
+         if (controller.GetIfGrounded() == true) { GetComponent<HealthSystem>().SetSuspendMove(false); }
         LRMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         //for input manager later on, but for now, i have the big stupid 
         // if (Input.GetButtonDown("Jump"))
@@ -75,13 +76,18 @@ public class PlayerInput : MonoBehaviour
         //     crouch = true;
         // }
     }
+ 
+
     public void SetJump(bool jump)
     {
         CanDoubleJump = jump;
     }
     private void FixedUpdate()
     {
-        controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump,DoubleJump);
+        if (GetComponent<HealthSystem>().GetSuspendMove() == false)
+        {
+            controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump, DoubleJump);
+        }     
         jump = false;
         DoubleJump = false;
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class AISystem : MonoBehaviour
 {
 	public float m_JumpForce = 400f;
-	private bool m_Grounded = false;
+	//private bool m_Grounded = false;
 	private bool m_FacingRight = true;
 	private float diff; 
 	private Vector3 m_Velocity = Vector3.zero;
@@ -49,7 +49,7 @@ public class AISystem : MonoBehaviour
 	{
 		if (other.tag == "Player")
 		{
-			AttackCooldown = 0.0f;
+			AttackCooldown = 2.0f;
 		}		
 		if (other.tag == "Ground")
         {
@@ -103,8 +103,8 @@ public class AISystem : MonoBehaviour
 	}
 	public void Attack(Transform pos, int Dmg)
 	{
-		KnockbackDir = target.transform.position - pos.position+new Vector3(0.0f,0.3f,0.0f);
-		target.GetComponent<HealthSystem>().TakeDamage(Dmg, KnockbackDir*10);
+		KnockbackDir = target.transform.position - pos.position+ Vector3.up;
+		target.GetComponent<HealthSystem>().TakeDamage(Dmg, KnockbackDir*3);
 		AttackCooldown = 2.0f;
 	}
 	private void Flip()
