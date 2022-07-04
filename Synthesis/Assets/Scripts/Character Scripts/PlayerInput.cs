@@ -9,6 +9,7 @@ public class PlayerInput : MonoBehaviour
     public float runSpeed = 40f;
   
     float LRMove = 0f;
+   [SerializeField] private Vector3 UDMove = Vector3.zero; 
     private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
     // Update is called once per frame
     void Update()
@@ -21,13 +22,16 @@ public class PlayerInput : MonoBehaviour
         // {
         //     jump = true;
         // }
-      //  if (Input.GetKeyUp("space"))
-      //  {
-      //      CanDoubleJump = true;
-      //  }
-
-        //Jump
-        if (Input.GetKeyDown("space"))
+        //  if (Input.GetKeyUp("space"))
+        //  {
+        //      CanDoubleJump = true;
+        //  }
+        if (Input.GetKeyDown("w"))
+        {
+            UDMove = Vector3.up;
+        }else { UDMove = Vector3.down; }
+            //Jump
+            if (Input.GetKeyDown("space"))
         {
 
             if (controller.GetIfGrounded() == false && CanDoubleJump == true)
@@ -63,7 +67,6 @@ public class PlayerInput : MonoBehaviour
             if (GetComponent<HealthSystem>().GetHealthLimit()> GetComponent<HealthSystem>().GetHealth())
             GetComponent<HealthSystem>().HealthUp(1);
         }
-        Debug.Log("jump" + jump);
         // if (Input.GetButtonDown("Crouch"))
         // {
         //     crouch = true;
@@ -86,7 +89,7 @@ public class PlayerInput : MonoBehaviour
     {
         if (GetComponent<HealthSystem>().GetSuspendMove() == false)
         {
-            controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump, DoubleJump);
+            controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump, DoubleJump,UDMove);
         }     
         jump = false;
         DoubleJump = false;

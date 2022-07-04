@@ -8,13 +8,12 @@ public class CharacterController3D : MonoBehaviour
 	[Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
 	private bool m_AirControl = true;                         // Whether or not a player can steer while jumping;
-	[SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
-																				//[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
+	[SerializeField] private LayerMask m_WhatIsGround, m_WhatIsWall;                          // A mask determining what is ground to the character															//[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
 	[SerializeField] private Collider m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 	[SerializeField] private BoxCollider coll; 
 	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-	private bool m_Grounded;            // Whether or not the player is grounded.
+	private bool m_Grounded,m_WallRun;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	//private Rigidbody2D m_Rigidbody2D;
 	private Rigidbody Rigidbody; 
@@ -63,7 +62,7 @@ public class CharacterController3D : MonoBehaviour
 	//		GetComponent<PlayerInput>().SetJump(true);
 	//	}
 	//}
-	public void Move(float move, bool crouch, bool jump, bool doubleJump)
+	public void Move(float move, bool crouch, bool jump, bool doubleJump,Vector3 RunUp)
 	{
 		
 		Debug.Log("move " + move);
@@ -79,6 +78,8 @@ public class CharacterController3D : MonoBehaviour
 
 		//only control the player if grounded or airControl is turned on
 		isGrounded();
+		IsWallRun();
+	
 		if (m_Grounded || m_AirControl)
 		{
 
@@ -120,6 +121,10 @@ public class CharacterController3D : MonoBehaviour
 			Debug.Log("grounded" + m_Grounded);
 			// Move the character by finding the target velocity
 			Vector3 targetVelocity = new Vector3(move * 10f, Rigidbody.velocity.y, Rigidbody.velocity.z);
+			if ((m_WallRun == true) && (RunUp != Vector3.zero))
+			{
+				targetVelocity.y = 7;
+			}
 			// And then smoothing it out and applying it to the character
 			Rigidbody.velocity = Vector3.SmoothDamp(Rigidbody.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
@@ -136,12 +141,22 @@ public class CharacterController3D : MonoBehaviour
 				Flip();
 			}
 		}
-
-		// If the player should jump...
 	
+		// If the player should jump...
+
 
 	}
-
+	private bool IsWallRun()
+    {
+		if ((Physics.BoxCast(coll.bounds.center - Vector3.left / 10, coll.bounds.size / 2, Vector3.left, Quaternion.Euler(Vector3.left), 0.1f, m_WhatIsWall) == true
+			|| Physics.BoxCast(coll.bounds.center - Vector3.right / 10, coll.bounds.size / 2, Vector3.right, Quaternion.Euler(Vector3.right), 0.1f, m_WhatIsWall) == true))
+		{
+			m_WallRun = true;
+		}
+		else m_WallRun = false;	
+		Debug.Log("WallContact" + m_WallRun);
+		return m_WallRun;
+	}
     public bool GetIfGrounded()
 	{
 		return isGrounded();
@@ -151,7 +166,6 @@ public class CharacterController3D : MonoBehaviour
     {
 		
 		m_Grounded= Physics.BoxCast(coll.bounds.center-Vector3.down/10, coll.bounds.size/2, Vector3.down, Quaternion.Euler(Vector3.down),0.1f,m_WhatIsGround);
-		Debug.Log("raycast checked"+ m_Grounded);
 		return Physics.BoxCast(coll.bounds.center - Vector3.down / 10, coll.bounds.size/2, Vector3.down, Quaternion.Euler(Vector3.down),0.1f, m_WhatIsGround);
 	}
 	private void Flip()
