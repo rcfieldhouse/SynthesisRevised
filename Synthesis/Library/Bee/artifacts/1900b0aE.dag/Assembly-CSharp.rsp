@@ -378,6 +378,7 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/Scripts/AISystem.cs"
+"Assets/Scripts/BlockManager.cs"
 "Assets/Scripts/CameraTrack.cs"
 "Assets/Scripts/Character Scripts/CharacterCombat.cs"
 "Assets/Scripts/Character Scripts/CharacterController2D.cs"
@@ -385,6 +386,8 @@
 "Assets/Scripts/Character Scripts/PlayerInput.cs"
 "Assets/Scripts/Health/HealthBar.cs"
 "Assets/Scripts/Health/HealthSystem.cs"
+"Assets/Scripts/movething.cs"
+"Assets/Scripts/RotateBall.cs"
 -langversion:9.0
 
 /deterministic
