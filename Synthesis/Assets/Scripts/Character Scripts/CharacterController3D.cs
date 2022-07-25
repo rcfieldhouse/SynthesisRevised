@@ -62,7 +62,7 @@ public class CharacterController3D : MonoBehaviour
 	//		GetComponent<PlayerInput>().SetJump(true);
 	//	}
 	//}
-	public void Move(float move, bool crouch, bool jump, bool doubleJump,Vector3 RunUp)
+	public void Move(float move, bool crouch, bool jump, bool doubleJump,float RunUp)
 	{
 		
 		Debug.Log("move " + move);
@@ -121,9 +121,9 @@ public class CharacterController3D : MonoBehaviour
 			Debug.Log("grounded" + m_Grounded);
 			// Move the character by finding the target velocity
 			Vector3 targetVelocity = new Vector3(move * 10f, Rigidbody.velocity.y, Rigidbody.velocity.z);
-			if ((m_WallRun == true) && (RunUp != Vector3.zero))
+			if ((m_WallRun == true) && (RunUp != 0))
 			{
-				targetVelocity.y = 7;
+				targetVelocity.y = 7*RunUp;
 			}
 			// And then smoothing it out and applying it to the character
 			Rigidbody.velocity = Vector3.SmoothDamp(Rigidbody.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);

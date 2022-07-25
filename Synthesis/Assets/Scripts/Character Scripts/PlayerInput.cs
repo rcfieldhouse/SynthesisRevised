@@ -5,18 +5,21 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     public CharacterController3D controller;
-    public CharacterCombat Combat; 
+    public CharacterCombat Combat;
     public float runSpeed = 40f;
-  
-    float LRMove = 0f;
-   [SerializeField] private Vector3 UDMove = Vector3.zero; 
+
+    [SerializeField] private float LRMove = 0f;
+    [SerializeField] private float UDMove = 0f;
+    [SerializeField] private Vector3 Direction = Vector3.right; 
     private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
     // Update is called once per frame
     void Update()
     {
         //LR move
-         if (controller.GetIfGrounded() == true) { GetComponent<HealthSystem>().SetSuspendMove(false); }
-        LRMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        if (controller.GetIfGrounded() == true) { GetComponent<HealthSystem>().SetSuspendMove(false); }
+        LRMove = Input.GetAxisRaw("Horizontal");
+        UDMove = Input.GetAxisRaw("Vertical");
+        Direction = new Vector3(LRMove, UDMove, transform.localScale.x);
         //for input manager later on, but for now, i have the big stupid 
         // if (Input.GetButtonDown("Jump"))
         // {
@@ -26,12 +29,11 @@ public class PlayerInput : MonoBehaviour
         //  {
         //      CanDoubleJump = true;
         //  }
-        if (Input.GetKeyDown("w"))
-        {
-            UDMove = Vector3.up;
-        }else { UDMove = Vector3.down; }
-            //Jump
-            if (Input.GetKeyDown("space"))
+
+
+
+        //Jump
+        if (Input.GetKeyDown("space"))
         {
 
             if (controller.GetIfGrounded() == false && CanDoubleJump == true)
@@ -87,9 +89,10 @@ public class PlayerInput : MonoBehaviour
     }
     private void FixedUpdate()
     {
+       Combat.SetAttackBox(Direction);
         if (GetComponent<HealthSystem>().GetSuspendMove() == false)
         {
-            controller.Move(LRMove * Time.fixedDeltaTime, crouch, jump, DoubleJump,UDMove);
+            controller.Move(LRMove * Time.fixedDeltaTime * runSpeed, crouch, jump, DoubleJump,UDMove);
         }     
         jump = false;
         DoubleJump = false;
