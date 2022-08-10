@@ -77,7 +77,7 @@ public class AISystem : MonoBehaviour
 
 		if (jump == true)
 		{
-			// Add a vertical force to the player.
+			// Add a vertical force to the AI.
 			GetComponent<Rigidbody>().velocity = Vector3.zero;
 			GetComponent<Rigidbody>().AddForce(new Vector3(0f, m_JumpForce * 10), 0f);
 

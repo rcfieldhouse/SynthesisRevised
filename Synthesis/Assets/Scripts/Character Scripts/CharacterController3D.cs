@@ -50,7 +50,7 @@ public class CharacterController3D : MonoBehaviour
 	//private void OnTriggerEnter(Collider other)
 	//{
 	//	if (other.tag == "Ground")
-    //    {
+	//    {
 	//		m_Grounded = true;
 	//	}
 	//}
@@ -62,9 +62,9 @@ public class CharacterController3D : MonoBehaviour
 	//		GetComponent<PlayerInput>().SetJump(true);
 	//	}
 	//}
-	public void Move(float move, bool crouch, bool jump, bool doubleJump,float RunUp)
+	public void Move(float move, bool crouch, bool jump, bool doubleJump, float RunUp, bool SuspendMove)
 	{
-		
+
 		Debug.Log("move " + move);
 		// If crouching, check to see if the character can stand up
 		//if (!crouch)
@@ -79,7 +79,7 @@ public class CharacterController3D : MonoBehaviour
 		//only control the player if grounded or airControl is turned on
 		isGrounded();
 		IsWallRun();
-	
+		if (SuspendMove == false) { 
 		if (m_Grounded || m_AirControl)
 		{
 
@@ -123,29 +123,35 @@ public class CharacterController3D : MonoBehaviour
 			Vector3 targetVelocity = new Vector3(move * 10f, Rigidbody.velocity.y, Rigidbody.velocity.z);
 			if ((m_WallRun == true) && (RunUp != 0))
 			{
-				targetVelocity.y = 7*RunUp;
+				targetVelocity.y = 7 * RunUp;
 			}
 			// And then smoothing it out and applying it to the character
 			Rigidbody.velocity = Vector3.SmoothDamp(Rigidbody.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
-			// If the input is moving the player right and the player is facing left...
-			if (move > 0 && !m_FacingRight)
-			{
-				// ... flip the player.
-				Flip();
-			}
-			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (move < 0 && m_FacingRight)
-			{
-				// ... flip the player.
-				Flip();
-			}
+
 		}
-	
+	}
+		// If the input is moving the player right and the player is facing left...
+		if (move > 0 && !m_FacingRight)
+		{
+			// ... flip the player.
+			Flip();
+		}
+		// Otherwise if the input is moving the player left and the player is facing right...
+		else if (move < 0 && m_FacingRight)
+		{
+			// ... flip the player.
+			Flip();
+		}
 		// If the player should jump...
 
 
 	}
+	public void AttackMovement(Vector3 move)
+    {
+		move = move.normalized;
+		Rigidbody.velocity = new Vector3 (move.x*10.0f,move.y * 10.0f, 0.0f); 
+    }
 	private bool IsWallRun()
     {
 		if ((Physics.BoxCast(coll.bounds.center - Vector3.left / 10, coll.bounds.size / 2, Vector3.left, Quaternion.Euler(Vector3.left), 0.1f, m_WhatIsWall) == true

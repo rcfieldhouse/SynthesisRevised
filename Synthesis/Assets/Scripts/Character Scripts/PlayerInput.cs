@@ -10,7 +10,8 @@ public class PlayerInput : MonoBehaviour
 
     [SerializeField] private float LRMove = 0f;
     [SerializeField] private float UDMove = 0f;
-    [SerializeField] private Vector3 Direction = Vector3.right; 
+    [SerializeField] private Vector3 Direction = Vector3.right;
+    private bool SusMove = false;
     private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
     // Update is called once per frame
     void Update()
@@ -51,17 +52,17 @@ public class PlayerInput : MonoBehaviour
         //Attack1 
         if (Input.GetKeyDown("1"))
         {
-            Combat.Attack(controller.transform,1);
+            Combat.Attack(controller.transform,1,Direction);
         }
         //Attack2 
         if (Input.GetKeyDown("2"))
         {
-            Combat.Attack(controller.transform, 2);
+            Combat.Attack(controller.transform, 2,Direction);
         }
         //Attack3 
         if (Input.GetKeyDown("3"))
         {
-            Combat.Attack(controller.transform, 3);
+            Combat.Attack(controller.transform, 3,Direction);
         }
       //devhacks 
         if (Input.GetKeyDown("p"))
@@ -89,11 +90,21 @@ public class PlayerInput : MonoBehaviour
     }
     private void FixedUpdate()
     {
-       Combat.SetAttackBox(Direction);
-        if (GetComponent<HealthSystem>().GetSuspendMove() == false)
+        Combat.SetCanAttack(controller.GetIfGrounded());
+        Combat.SetAttackBox(Direction);
+
+        //directional attacks disable player control temporarily
+        if (Combat.GetIsDirAttacking() == true)
         {
-            controller.Move(LRMove * Time.fixedDeltaTime * runSpeed, crouch, jump, DoubleJump,UDMove);
-        }     
+            Combat.SetIsDirAttacking(false,Direction);
+            GetComponent<HealthSystem>().SetSuspendMove(true);
+            controller.AttackMovement(Direction);
+        }
+
+        //if player isnt getting knocked back or in mid attack
+        SusMove = GetComponent<HealthSystem>().GetSuspendMove();
+            controller.Move(LRMove * Time.fixedDeltaTime * runSpeed, crouch, jump, DoubleJump,UDMove,SusMove);
+          
         jump = false;
         DoubleJump = false;
     }
