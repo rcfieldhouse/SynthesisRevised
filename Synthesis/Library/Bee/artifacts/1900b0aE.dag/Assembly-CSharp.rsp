@@ -380,6 +380,7 @@
 "Assets/Scripts/AISystem.cs"
 "Assets/Scripts/BlockManager.cs"
 "Assets/Scripts/CameraTrack.cs"
+"Assets/Scripts/Character Scripts/AnimationManager.cs"
 "Assets/Scripts/Character Scripts/CharacterCombat.cs"
 "Assets/Scripts/Character Scripts/CharacterController2D.cs"
 "Assets/Scripts/Character Scripts/CharacterController3D.cs"

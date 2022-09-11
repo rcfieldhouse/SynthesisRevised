@@ -7,13 +7,22 @@ public class PlayerInput : MonoBehaviour
     public CharacterController3D controller;
     public CharacterCombat Combat;
     public float runSpeed = 40f;
-
+   public AnimationManager animationManager; 
     [SerializeField] private float LRMove = 0f;
     [SerializeField] private float UDMove = 0f;
     [SerializeField] private Vector3 Direction = Vector3.right;
     private bool SusMove = false;
-    private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false;
+    private bool crouch = false, jump = false,DoubleJump=false,CanDoubleJump=false,Sprint = false;
     // Update is called once per frame
+    private bool[] attacks = new bool[3]; 
+    void Start()
+    {
+        attacks[0] = false;
+        attacks[1] = false;
+        attacks[2] = false;
+        animationManager = GetComponent<AnimationManager>();
+    }
+
     void Update()
     {
         //LR move
@@ -31,8 +40,8 @@ public class PlayerInput : MonoBehaviour
         //      CanDoubleJump = true;
         //  }
 
-
-
+    
+        
         //Jump
         if (Input.GetKeyDown("space"))
         {
@@ -48,20 +57,32 @@ public class PlayerInput : MonoBehaviour
                 jump = true;
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+            Sprint = true; 
+        else 
+            Sprint = false; 
         //Attack1 
         if (Input.GetKeyDown("1"))
         {
+            attacks[0] = true;
             Combat.Attack(controller.transform,1,Direction);
         }
+        else if (Input.GetKeyUp("1"))
+           attacks[0] = false;
+      
         //Attack2 
         if (Input.GetKeyDown("2"))
         {
+            attacks[1] = true;
             Combat.Attack(controller.transform, 2,Direction);
         }
+        else if(Input.GetKeyUp("2"))
+            attacks[1] = false;
+
         //Attack3 
         if (Input.GetKeyDown("3"))
         {
+            attacks[2] = true;
             Combat.Attack(controller.transform, 3,Direction);
         }
       //devhacks 
@@ -81,6 +102,7 @@ public class PlayerInput : MonoBehaviour
         // {
         //     crouch = true;
         // }
+        animationManager.SetAnimation(LRMove, UDMove, jump, Sprint, attacks);
     }
  
 
@@ -108,4 +130,10 @@ public class PlayerInput : MonoBehaviour
         jump = false;
         DoubleJump = false;
     }
+  // private IEnumerator(int i)
+  // {
+  //
+  //
+  //     yield return i; 
+  // }
 }
